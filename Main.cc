@@ -14,12 +14,24 @@ enum class VarType {
 
 class Variable {
 	string name;
+	VarType type = VarType::NUM;
+	float value;
+
 public:
-	//Variable() :name("undefined") {};
+	Variable() :name("undefined") {};
 	Variable(string name) :name(name) {};
 	Variable(const Variable& var) :name(var.getName()) {};
 	string getName() const {
 		return name;
+	}
+	bool isType(VarType t) const {
+		return t == type;
+	}
+	void setValue(const float val) {
+		value = val;
+	}
+	float getValue() {
+		return value;
 	}
 };
 
@@ -31,8 +43,6 @@ int main() {
 
 	Scope scope;
 
-
-	
 	std::ifstream file("./script.ss");
 
 	string line = "";
@@ -45,28 +55,44 @@ int main() {
 			VarType declaredType = VarType::VOID;
 			string last = "";
 			bool pause = true;
-			
+			Variable* lhs = nullptr;
+
+			bool assigning = false;
+
+
 			
 			for (const char& i : line) {
 				if (i == ' ' || i == '\t') {
 					pause = true;
 
-					if (declaredType != VarType::VOID) {
+					if (last.size()) {
+						if (assigning && lhs->isType(VarType::NUM)) {
+							lhs->setValue(stoi(last, nullptr));
+							assigning = false;
+						}
+						if (declaredType != VarType::VOID) {
 
-						scope.insert({ last, Variable(last) });
-						std::cout << "ccc" << scope[last].getName();
+							scope.insert({ last, Variable(last) });
+							std::cout << "ccc" << scope[last].getName();
 
-						declaredType = VarType::VOID;
+							declaredType = VarType::VOID;
+							last = "";
+						}
+						else if (last == "num")
+						{
+							declaredType = VarType::NUM;
+							last = "";
+						}
 					}
-					else if (last == "num")
-					{
-						declaredType = VarType::NUM;
-					}
+	
 
+				}
+				else if (i == '=') {
+					std::cout << "lhs: " << last << '\n';
+					lhs = &(scope[last]);
+					assigning = true;
 					last = "";
 				}
-				else if (i == '=')
-					std::cout << "lhs: " << last << '\n';
 				else
 					last += i;
 
@@ -78,6 +104,7 @@ int main() {
 		file.close();
 	}
 
+	std::cout << scope["ddd"].getValue();
 	
 	return 0;
 }
