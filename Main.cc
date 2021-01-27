@@ -2,7 +2,8 @@
 #include <fstream>
 #include <string>
 #include <map>
-
+#include <queue>
+#include <stack>
 
 
 using string = std::string;
@@ -15,7 +16,7 @@ enum class VarType {
 class Variable {
 	string name;
 	VarType type = VarType::NUM;
-	float value;
+	float value = NULL;
 
 public:
 	Variable() :name("undefined") {};
@@ -46,7 +47,46 @@ bool isDigit(const char character) {
 }
 
 
+string toRPN(string expr) {
+	std::cout << "expr: '" << expr << "'\n";
+
+	string polish;
+	std::stack<char> ops;
+
+	string curr = "";
+
+	for (const char& i : expr) {
+		if (isDigit(i)) {
+			curr += i;
+			continue;
+		}
+		if (i == ' ' || i == '\t')
+			continue;
+
+		polish += curr + ' ';
+		curr = "";
+
+
+		ops.push(i);
+	}
+
+	polish += curr + ' ';
+	
+	while (!ops.empty()) {
+		polish += ops.top();
+		ops.pop();
+	}
+
+	std::cout << polish;
+
+	return 0;
+}
+
+
 int main() {
+
+	std::cout << "result: " << toRPN("2+2");
+
 
 	Scope scope;
 	std::ifstream file("./script.ss");
@@ -105,14 +145,6 @@ int main() {
 
 					if (i == '\n') {
 						if (assigning && lhs && lhs->isType(VarType::NUM)) {
-							/*
-							if (isDigit(last[0]))
-								lhs->setValue(stoi(last, nullptr));
-							else if (scope[last].exists())
-								lhs->setValue(scope[last].getValue());
-							else
-								std::cerr << "word: \"" << last << "\" is not a number nor a variable\n";
-							*/
 							if (rhs.size() && isDigit(rhs[0]))
 								lhs->setValue(stoi(rhs, nullptr));
 							else
@@ -159,6 +191,5 @@ int main() {
 		file.close();
 	}
 
-	
 	return 0;
 }
