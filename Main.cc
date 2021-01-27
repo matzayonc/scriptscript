@@ -46,13 +46,13 @@ bool isDigit(const char character) {
 	return (int)character >= 48 && (int)character <= 57;
 }
 
+bool isOperator(const char c) {
+	return c == '+' || c == '-' || c == '*' || c == '/';
+}
 
 string toRPN(string expr) {
-	std::cout << "expr: '" << expr << "'\n";
-
 	string polish;
 	std::stack<char> ops;
-
 	string curr = "";
 
 	for (const char& i : expr) {
@@ -65,8 +65,6 @@ string toRPN(string expr) {
 
 		polish += curr + ' ';
 		curr = "";
-
-
 		ops.push(i);
 	}
 
@@ -74,23 +72,68 @@ string toRPN(string expr) {
 	
 	while (!ops.empty()) {
 		polish += ops.top();
+		polish += ' ';
 		ops.pop();
 	}
 
-	std::cout << polish;
+	return polish;
+}
 
-	return 0;
+
+float eval(string expr) {
+	float first, second;
+	std::stack<float> nums;
+	string curr = "";
+
+	std::cout << "\nRPN: '" << toRPN(expr) << '\n';
+
+	for (auto i : toRPN(expr)) {
+		if (i == ' ' || i == '\t') {
+			if(curr != "")
+				nums.push(stoi(curr, nullptr));
+			curr = "";
+			continue;
+		}
+		else if (isDigit(i)) {
+			curr += i;
+			continue;
+		}
+		second = nums.top();
+		nums.pop();
+		first = nums.top();
+		nums.pop();
+
+		if (i == '+')
+			first += second;		
+		else if (i == '-') 
+			first -= second;		
+		else if (i == '*') 
+			first *= second;
+		else if (i == '/')
+			first /= second;
+		else {
+			std::cerr << "what is: " << i << "?\n";
+			break;
+		}
+
+		nums.push(first);
+	}
+	if (nums.size() > 1)
+		std::cerr << "numbers left in stack";
+
+
+	return nums.top();
 }
 
 
 int main() {
 
-	std::cout << "result: " << toRPN("2+2");
-
+	std::cout << "result: " << eval("1");
 
 	Scope scope;
 	std::ifstream file("./script.ss");
 	string line = "";
+
 
 	if (file.is_open()) {
 		while (getline(file, line)) {
@@ -135,6 +178,8 @@ int main() {
 								rhs += last;
 							else if (scope[last].exists())
 								rhs += std::to_string(scope[last].getValue());
+							else if (isOperator(last[0]))
+								rhs += last;
 							else
 								std::cerr << "word: \"" << last << "\" is not a number nor a variable\n";
 
@@ -145,8 +190,10 @@ int main() {
 
 					if (i == '\n') {
 						if (assigning && lhs && lhs->isType(VarType::NUM)) {
-							if (rhs.size() && isDigit(rhs[0]))
-								lhs->setValue(stoi(rhs, nullptr));
+							if (rhs.size()) {
+								std::cout << rhs;
+								lhs->setValue(eval(rhs));
+							}
 							else
 								std::cerr << "word: rhs\"" << rhs << "\" is not a number nor a variable\n";
 
