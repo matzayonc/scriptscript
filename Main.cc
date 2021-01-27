@@ -56,15 +56,23 @@ string toRPN(string expr) {
 	string curr = "";
 
 	for (const char& i : expr) {
+		if (i == ' ' || i == '\t')
+			continue;
+
 		if (isDigit(i)) {
 			curr += i;
 			continue;
 		}
-		if (i == ' ' || i == '\t')
-			continue;
 
 		polish += curr + ' ';
 		curr = "";
+
+		if (!ops.empty() && ops.top()) {
+			polish += ops.top();
+			polish += ' ';
+			ops.pop();
+		}
+
 		ops.push(i);
 	}
 
