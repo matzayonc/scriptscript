@@ -33,6 +33,9 @@ public:
 	float getValue() {
 		return value;
 	}
+	bool exists() {
+		return name != "undefined";
+	}
 };
 
 
@@ -90,8 +93,11 @@ int main() {
 						if (assigning && lhs->isType(VarType::NUM)) {
 							if (isNumber(last[0]))
 								lhs->setValue(stoi(last, nullptr));
+							else if (scope[last].exists())
+								lhs->setValue(scope[last].getValue());
 							else
-								lhs->setValue(99);
+								throw "not a number and not a variable\n";
+							
 							
 
 							assigning = false;
