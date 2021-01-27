@@ -30,7 +30,7 @@ public:
 	void setValue(const float val) {
 		value = val;
 	}
-	float getValue() {
+	float getValue(bool skipValidation = false) {
 		return value;
 	}
 	bool exists() {
@@ -41,7 +41,7 @@ public:
 
 using Scope = std::map<std::string, Variable>;
 
-bool isNumber(const char character) {
+bool isDigit(const char character) {
 	return (int)character >= 48 && (int)character <= 57;
 }
 
@@ -49,23 +49,23 @@ bool isNumber(const char character) {
 int main() {
 
 	Scope scope;
-
 	std::ifstream file("./script.ss");
-
 	string line = "";
-	
 
 	if (file.is_open()) {
 		while (getline(file, line)) {
 
-			line += ' ';
+			line += '\n';
 
 			VarType declaredType = VarType::VOID;
 			string last = "";
 			bool pause = true;
-			Variable* lhs = nullptr;
 
 			bool assigning = false;
+			VarType assignmentType = VarType::NUM;
+			Variable* lhs = nullptr;
+			string rhs = "";
+
 
 			bool printing = false;
 			bool prevIsForwardSlash = false;
@@ -82,41 +82,59 @@ int main() {
 						std::cerr << "cannot call" << last << '\n';
 				}
 				else if (i == ')') {
-					if(printing)
+					if (printing)
 						std::cout << "out: " << scope[last].getValue() << '\n';
 
 				}
-				else if (i == ' ' || i == '\t') {
+				else if (i == ' ' || i == '\t' || i == '\n') {
 					pause = true;
-					
+
 					if (last.size()) {
-						if (assigning && lhs->isType(VarType::NUM)) {
-							if (isNumber(last[0]))
+						if (assigning && assignmentType == VarType::NUM) {
+							if (isDigit(last[0]))
+								rhs += last;
+							else if (scope[last].exists())
+								rhs += std::to_string(scope[last].getValue());
+							else
+								std::cerr << "word: \"" << last << "\" is not a number nor a variable\n";
+
+							last = "";
+						}
+					}
+
+
+					if (i == '\n') {
+						if (assigning && lhs && lhs->isType(VarType::NUM)) {
+							/*
+							if (isDigit(last[0]))
 								lhs->setValue(stoi(last, nullptr));
 							else if (scope[last].exists())
 								lhs->setValue(scope[last].getValue());
 							else
-								throw "not a number and not a variable\n";
-							
-							
+								std::cerr << "word: \"" << last << "\" is not a number nor a variable\n";
+							*/
+							if (rhs.size() && isDigit(rhs[0]))
+								lhs->setValue(stoi(rhs, nullptr));
+							else
+								std::cerr << "word: rhs\"" << rhs << "\" is not a number nor a variable\n";
 
 							assigning = false;
 						}
-						if (declaredType != VarType::VOID) {
-
-							scope.insert({ last, Variable(last) });
-							std::cout << "ccc" << scope[last].getName() << '\n';
-
-							declaredType = VarType::VOID;
-						}
-						else if (last == "num")
-						{
-							declaredType = VarType::NUM;
-							last = "";
-						}
 					}
-	
 
+					
+
+					if (declaredType != VarType::VOID) {
+
+						scope.insert({ last, Variable(last) });
+
+						declaredType = VarType::VOID;
+					}
+					else if (last == "num")
+					{
+						declaredType = VarType::NUM;
+						last = "";
+					}
 				}
 				else if (i == '=') {
 					std::cout << "lhs: " << last << '\n';
