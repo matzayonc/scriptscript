@@ -59,10 +59,25 @@ int main() {
 
 			bool assigning = false;
 
+			bool printing = false;
+
 
 			
 			for (const char& i : line) {
-				if (i == ' ' || i == '\t') {
+				if (i == '(') {
+					if (last == "out") {
+						printing = true;
+						last = "";
+					}
+					else
+						std::cerr << "cannot call" << last << '\n';
+				}
+				else if (i == ')') {
+					if(printing)
+						std::cout << "out: " << scope[last].getValue() << '\n';
+
+				}
+				else if (i == ' ' || i == '\t') {
 					pause = true;
 
 					if (last.size()) {
@@ -73,7 +88,7 @@ int main() {
 						if (declaredType != VarType::VOID) {
 
 							scope.insert({ last, Variable(last) });
-							std::cout << "ccc" << scope[last].getName();
+							std::cout << "ccc" << scope[last].getName() << '\n';
 
 							declaredType = VarType::VOID;
 							last = "";
@@ -104,7 +119,6 @@ int main() {
 		file.close();
 	}
 
-	std::cout << scope["ddd"].getValue();
 	
 	return 0;
 }
