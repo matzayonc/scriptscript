@@ -51,6 +51,7 @@ int main() {
 	if (file.is_open()) {
 		while (getline(file, line)) {
 
+			line += ' ';
 
 			VarType declaredType = VarType::VOID;
 			string last = "";
