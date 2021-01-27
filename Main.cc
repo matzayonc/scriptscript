@@ -38,6 +38,10 @@ public:
 
 using Scope = std::map<std::string, Variable>;
 
+bool isNumber(const char character) {
+	return (int)character >= 48 && (int)character <= 57;
+}
+
 
 int main() {
 
@@ -61,6 +65,7 @@ int main() {
 			bool assigning = false;
 
 			bool printing = false;
+			bool prevIsForwardSlash = false;
 
 
 			
@@ -80,10 +85,15 @@ int main() {
 				}
 				else if (i == ' ' || i == '\t') {
 					pause = true;
-
+					
 					if (last.size()) {
 						if (assigning && lhs->isType(VarType::NUM)) {
-							lhs->setValue(stoi(last, nullptr));
+							if (isNumber(last[0]))
+								lhs->setValue(stoi(last, nullptr));
+							else
+								lhs->setValue(99);
+							
+
 							assigning = false;
 						}
 						if (declaredType != VarType::VOID) {
@@ -107,6 +117,12 @@ int main() {
 					lhs = &(scope[last]);
 					assigning = true;
 					last = "";
+				}
+				else if (i == '/') {
+					if (prevIsForwardSlash)
+						break;
+					else
+						prevIsForwardSlash = true;
 				}
 				else
 					last += i;
