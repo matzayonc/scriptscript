@@ -91,7 +91,6 @@ int main() {
 							std::cout << "ccc" << scope[last].getName() << '\n';
 
 							declaredType = VarType::VOID;
-							last = "";
 						}
 						else if (last == "num")
 						{
