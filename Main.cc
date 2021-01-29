@@ -58,21 +58,26 @@ string toRPN(string expr) {
 	for (const char& i : expr) {
 		if (i == ' ' || i == '\t')
 			continue;
-
-		if (isDigit(i)) {
+		else if (isDigit(i)) {
 			curr += i;
 			continue;
 		}
-
+		else if (!isOperator(i)) {
+			std::cerr << "idk wtf is: " << i << '\n';
+			continue;
+		}
 		polish += curr + ' ';
 		curr = "";
 
-		if (!ops.empty() && ops.top()) {
+		while (!ops.empty()) {
+			if (i == '*' || i == '/')
+				if (ops.top() == '+' || ops.top() == '-')
+					break;
+
 			polish += ops.top();
 			polish += ' ';
 			ops.pop();
 		}
-
 		ops.push(i);
 	}
 
@@ -87,13 +92,12 @@ string toRPN(string expr) {
 	return polish;
 }
 
-
 float eval(string expr) {
 	float first, second;
 	std::stack<float> nums;
 	string curr = "";
 
-	std::cout << "\nRPN: '" << toRPN(expr) << '\n';
+	std::cout << "\nRPN: '" << toRPN(expr) << "'\n";
 
 	for (auto i : toRPN(expr)) {
 		if (i == ' ' || i == '\t') {
@@ -135,8 +139,6 @@ float eval(string expr) {
 
 
 int main() {
-
-	std::cout << "result: " << eval("1");
 
 	Scope scope;
 	std::ifstream file("./script.ss");
@@ -185,7 +187,7 @@ int main() {
 							if (isDigit(last[0]))
 								rhs += last;
 							else if (scope[last].exists())
-								rhs += std::to_string(scope[last].getValue());
+								rhs += std::to_string((int)scope[last].getValue());
 							else if (isOperator(last[0]))
 								rhs += last;
 							else
