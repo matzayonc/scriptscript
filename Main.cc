@@ -39,6 +39,14 @@ int main() {
 			bool prevIsForwardSlash = false;
 
 
+			Expression expr("", scope);
+
+			size_t eqs = line.find('=');
+			if (eqs != std::string::npos)
+				expr.setString(line.substr(eqs + 1, std::string::npos));
+			else
+				expr.setString(line);
+
 			
 			for (const char& i : line) {
 				if (i == '(') {
@@ -76,9 +84,9 @@ int main() {
 					if (i == '\n') {
 						if (assigning && lhs && lhs->isType(VarType::NUM)) {
 							if (rhs.size()) {
-								std::cout << rhs;
-								Expression expr(rhs);
+								//std::cout << rhs;
 								lhs->setValue(expr.eval());
+								std::cout << expr.eval();
 							}
 							else
 								std::cerr << "word: rhs\"" << rhs << "\" is not a number nor a variable\n";
@@ -102,7 +110,7 @@ int main() {
 					}
 				}
 				else if (i == '=') {
-					std::cout << "lhs: " << last << '\n';
+					//std::cout << "lhs: " << last << '\n';
 					lhs = &(scope[last]);
 					assigning = true;
 					last = "";

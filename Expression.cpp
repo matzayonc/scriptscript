@@ -11,13 +11,21 @@ bool isOperator(const char c) {
 	return c == '+' || c == '-' || c == '*' || c == '/';
 }
 
+bool isValidInVariableName(const char c) {
+	return !isWhitespace(c) && !isOperator(c) && c != '(' && c != ')' && c != '\\' ;
+}
+
+bool isWhitespace(const char c) {
+	return c == ' ' || c == '\t' || c == '\n';
+}
+
 string Expression::toRPN() {
 	string polish;
 	std::stack<char> ops;
 	string curr = "";
 
 	for (const char& i : expr) {
-		if (i == ' ' || i == '\t')
+		if (isWhitespace(i))
 			continue;
 		else if (isDigit(i)) {
 			curr += i;
@@ -95,4 +103,47 @@ float Expression::eval() {
 
 
 	return nums.top();
+}
+
+void Expression::setString(string expression) {
+	expr = expression;
+}
+
+
+void Expression::hydrateVariables() {
+
+	string name = "";
+	string hydrated = "";
+
+
+	for (const char& i : expr) {
+		if (name.empty()){
+			if (!isDigit(i) && isValidInVariableName(i))
+				name += i;
+			else
+				hydrated += i;
+		}
+		else {
+			if (isValidInVariableName(i))
+				name += i;
+			else {
+				if (i == '(')
+					continue; // function
+				else
+					expr += 
+
+				expr += std::to_string((int)scope[name].getValue());
+				name = "";
+
+
+
+
+
+			}
+		}
+
+
+	}
+
+
 }
