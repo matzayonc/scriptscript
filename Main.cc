@@ -13,6 +13,19 @@ enum class VarType {
 	NUM
 };
 
+string toRPN(string expr);
+
+
+
+class Expression {
+	string expr;
+
+public:
+	Expression(string expression) : expr(expression) {};
+	float eval();
+};
+
+
 class Variable {
 	string name;
 	VarType type = VarType::NUM;
@@ -92,7 +105,7 @@ string toRPN(string expr) {
 	return polish;
 }
 
-float eval(string expr) {
+float Expression::eval() {
 	float first, second;
 	std::stack<float> nums;
 	string curr = "";
@@ -202,7 +215,8 @@ int main() {
 						if (assigning && lhs && lhs->isType(VarType::NUM)) {
 							if (rhs.size()) {
 								std::cout << rhs;
-								lhs->setValue(eval(rhs));
+								Expression expr(rhs);
+								lhs->setValue(expr.eval());
 							}
 							else
 								std::cerr << "word: rhs\"" << rhs << "\" is not a number nor a variable\n";
