@@ -20,6 +20,8 @@ public:
 	Variable() :name("undefined") {};
 	Variable(string name) :name(name) {};
 	Variable(const Variable& var) :name(var.getName()) {};
+
+
 	string getName() const {
 		return name;
 	}

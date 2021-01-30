@@ -62,6 +62,8 @@ string Expression::toRPN() {
 }
 
 float Expression::eval() {
+	if (expr.empty()) return 0;
+
 	hydrateVariables();
 
 	float first, second;
@@ -108,7 +110,8 @@ float Expression::eval() {
 	}
 	if (nums.size() > 1)
 		std::cerr << "numbers left in stack";
-
+	if (nums.empty())
+		return 0;
 
 	return nums.top();
 }
@@ -134,8 +137,10 @@ void Expression::hydrateVariables() {
 		else if (isValidInVariableName(i))
 			name += i;
 		else if(i == '(')
-				continue; // function
+				continue; // functions
 		else{
+			if (!(*scope)[name].exists())
+				std::cerr << "word: " << name << " is not a variable(will be 0)\n";
 
 			hydrated += std::to_string((int)(*scope)[name].getValue()); //FIXME
 
