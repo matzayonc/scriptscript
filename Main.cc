@@ -39,7 +39,7 @@ int main() {
 			bool prevIsForwardSlash = false;
 
 
-			Expression expr("", scope);
+			Expression expr("", &scope);
 
 			size_t eqs = line.find('=');
 			if (eqs != std::string::npos)
@@ -131,6 +131,7 @@ int main() {
 		}
 		file.close();
 	}
+
 
 	return 0;
 }

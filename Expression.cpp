@@ -62,6 +62,8 @@ string Expression::toRPN() {
 }
 
 float Expression::eval() {
+	hydrateVariables();
+
 	float first, second;
 	std::stack<float> nums;
 	string curr = "";
@@ -78,6 +80,12 @@ float Expression::eval() {
 			curr += i;
 			continue;
 		}
+
+		if (nums.size() < 2) {
+			std::cerr << "invalid expression: not enought numbers\n";
+			continue;
+		}
+
 		second = nums.top();
 		nums.pop();
 		first = nums.top();
@@ -123,27 +131,21 @@ void Expression::hydrateVariables() {
 			else
 				hydrated += i;
 		}
-		else {
-			if (isValidInVariableName(i))
-				name += i;
-			else {
-				if (i == '(')
-					continue; // function
-				else
-					expr += 
+		else if (isValidInVariableName(i))
+			name += i;
+		else if(i == '(')
+				continue; // function
+		else{
 
-				expr += std::to_string((int)scope[name].getValue());
-				name = "";
+			hydrated += std::to_string((int)(*scope)[name].getValue()); //FIXME
 
+			name = "";
 
-
-
-
-			}
+			hydrated += i;
 		}
-
-
+		
 	}
-
+	std::cout << hydrated;
+	expr = hydrated;
 
 }

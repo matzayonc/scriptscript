@@ -12,13 +12,15 @@ using Scope = std::map<std::string, Variable>;
 
 class Expression{
 	string expr;
-	Scope scope;
+	Scope* scope;
 
 	string toRPN();
 	void hydrateVariables();
 
 public:
-	Expression(string expression, Scope& currentScope) : expr(expression), scope(currentScope) {};
+	Expression(string expression, Scope* currentScope) 
+		: expr(expression), scope(currentScope) {};
+
 	void setString(string expression);
 	float eval();
 };
