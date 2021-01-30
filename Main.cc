@@ -8,150 +8,9 @@
 #include "Expression.h"
 #include "Variable.h"
 
-using string = std::string;
-
-enum class VarType {
-	VOID = 0,
-	NUM
-};
-
-string toRPN(string expr);
-
-
-
-class Expression {
-	string expr;
-
-public:
-	Expression(string expression) : expr(expression) {};
-	float eval();
-};
-
-
-class Variable {
-	string name;
-	VarType type = VarType::NUM;
-	float value = NULL;
-
-public:
-	Variable() :name("undefined") {};
-	Variable(string name) :name(name) {};
-	Variable(const Variable& var) :name(var.getName()) {};
-	string getName() const {
-		return name;
-	}
-	bool isType(VarType t) const {
-		return t == type;
-	}
-	void setValue(const float val) {
-		value = val;
-	}
-	float getValue(bool skipValidation = false) {
-		return value;
-	}
-	bool exists() {
-		return name != "undefined";
-	}
-};
-
 
 using string = std::string;
 using Scope = std::map<std::string, Variable>;
-
-bool isDigit(const char character) {
-	return (int)character >= 48 && (int)character <= 57;
-}
-
-bool isOperator(const char c) {
-	return c == '+' || c == '-' || c == '*' || c == '/';
-}
-
-string toRPN(string expr) {
-	string polish;
-	std::stack<char> ops;
-	string curr = "";
-
-	for (const char& i : expr) {
-		if (i == ' ' || i == '\t')
-			continue;
-		else if (isDigit(i)) {
-			curr += i;
-			continue;
-		}
-		else if (!isOperator(i)) {
-			std::cerr << "idk wtf is: " << i << '\n';
-			continue;
-		}
-		polish += curr + ' ';
-		curr = "";
-
-		while (!ops.empty()) {
-			if (i == '*' || i == '/')
-				if (ops.top() == '+' || ops.top() == '-')
-					break;
-
-			polish += ops.top();
-			polish += ' ';
-			ops.pop();
-		}
-		ops.push(i);
-	}
-
-	polish += curr + ' ';
-	
-	while (!ops.empty()) {
-		polish += ops.top();
-		polish += ' ';
-		ops.pop();
-	}
-
-	return polish;
-}
-
-float Expression::eval() {
-	float first, second;
-	std::stack<float> nums;
-	string curr = "";
-
-	std::cout << "\nRPN: '" << toRPN(expr) << "'\n";
-
-	for (auto i : toRPN(expr)) {
-		if (i == ' ' || i == '\t') {
-			if(curr != "")
-				nums.push(stoi(curr, nullptr));
-			curr = "";
-			continue;
-		}
-		else if (isDigit(i)) {
-			curr += i;
-			continue;
-		}
-		second = nums.top();
-		nums.pop();
-		first = nums.top();
-		nums.pop();
-
-		if (i == '+')
-			first += second;		
-		else if (i == '-') 
-			first -= second;		
-		else if (i == '*') 
-			first *= second;
-		else if (i == '/')
-			first /= second;
-		else {
-			std::cerr << "what is: " << i << "?\n";
-			break;
-		}
-
-		nums.push(first);
-	}
-	if (nums.size() > 1)
-		std::cerr << "numbers left in stack";
-
-
-	return nums.top();
-}
 
 
 int main() {
@@ -228,9 +87,6 @@ int main() {
 								//std::cout << rhs;
 								lhs->setValue(expr.eval());
 								std::cout << expr.eval();
-								std::cout << rhs;
-								Expression expr(rhs);
-								lhs->setValue(expr.eval());
 							}
 							else
 								std::cerr << "word: rhs\"" << rhs << "\" is not a number nor a variable\n";
