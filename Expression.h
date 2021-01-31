@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <vector>
 
 #include "Variable.h"
 

@@ -24,7 +24,7 @@ int main() {
 		while (getline(file, line)) {
 
 			line = line.substr(0, line.find('//')) + '\n';
-			std::cout << "line: " << line << '\n';
+			//std::cout << "line: " << line << '\n';
 
 			VarType declaredType = VarType::VOID;
 
@@ -72,10 +72,6 @@ int main() {
 		}
 		file.close();
 	}
-
-
-	std::cout << std::to_string((int)scope["out"].getValue());
-
 
 
 	return 0;

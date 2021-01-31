@@ -126,9 +126,31 @@ void Expression::hydrateVariables() {
 	string name = "";
 	string hydrated = "";
 
+	std::vector<Expression> args;
+	bool argMode = false;
+	string arg = "";
 
-	for (const char& i : expr) {
-		if (name.empty()){
+	for (const char& i : expr + ' ') {
+		if (argMode) {
+			if (isWhitespace(i)) continue;
+
+			if (i == ')' || i == ',') {
+				args.push_back(Expression(arg, scope));
+				arg = "";
+			}
+
+			if (i == ')') {
+				argMode = false;
+
+				if (name == "out")
+					std::cout << "out: " << args[0].eval() << '\n';
+
+				name = "";
+				args.clear();
+			}
+			else arg += i;
+		}
+		else if (name.empty()){
 			if (!isDigit(i) && isValidInVariableName(i))
 				name += i;
 			else
@@ -136,21 +158,23 @@ void Expression::hydrateVariables() {
 		}
 		else if (isValidInVariableName(i))
 			name += i;
-		else if(i == '(')
+		else if (i == '(') {
+			argMode = true;
+
+			if(name == "out")
 				continue; // functions
+		}
 		else{
 			if (!(*scope)[name].exists())
 				std::cerr << "word: " << name << " is not a variable(will be 0)\n";
 
-			hydrated += std::to_string((int)(*scope)[name].getValue()); //FIXME
+			hydrated += std::to_string((int)(*scope)[name].getValue()); //FIXME: shouldnt always be int
 
 			name = "";
 
 			hydrated += i;
 		}
-		
 	}
-	std::cout << hydrated;
-	expr = hydrated;
 
+	expr = hydrated;
 }
