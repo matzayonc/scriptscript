@@ -12,7 +12,7 @@ bool isOperator(const char c) {
 }
 
 bool isValidInVariableName(const char c) {
-	return !isWhitespace(c) && !isOperator(c) && c != '(' && c != ')' && c != '\\' ;
+	return !isWhitespace(c) && !isOperator(c) && c != '(' && c != ')' && c != ',' && c != '\\' ;
 }
 
 bool isWhitespace(const char c) {
@@ -134,17 +134,24 @@ void Expression::hydrateVariables() {
 		if (argMode) {
 			if (isWhitespace(i)) continue;
 
-			if (i == ')' || i == ',') {
+			if (i == ',') {
 				args.push_back(Expression(arg, scope));
 				arg = "";
 			}
-
-			if (i == ')') {
+			else if (i == ')') {
+				args.push_back(Expression(arg, scope));
 				argMode = false;
 
-				if (name == "out")
-					std::cout << "out: " << args[0].eval() << '\n';
+				if (name == "out") {
+					std::cout << "out: ";
+					for (Expression& e : args)
+						std::cout << e.eval() << ", ";
+						
+					std::cout << "\b\b \n";
 
+				}
+
+				arg = "";
 				name = "";
 				args.clear();
 			}
@@ -175,6 +182,6 @@ void Expression::hydrateVariables() {
 			hydrated += i;
 		}
 	}
-
+	//std::cout << expr <<  ", hydrated is: " << hydrated << '\n';
 	expr = hydrated;
 }
