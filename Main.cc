@@ -7,6 +7,7 @@
 
 #include "Expression.h"
 #include "Variable.h"
+#include "Function.h"
 
 
 using string = std::string;
@@ -18,6 +19,7 @@ int main() {
 	Scope scope;
 	std::ifstream file("./script.ds");
 	string line = "";
+
 
 
 	if (file.is_open()) {

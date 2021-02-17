@@ -9,6 +9,9 @@ bool Function::exists() const{
 }
 
 void Function::execute() {
+
+	std::cout << code;
+
 	/*
 	while (getline(file, line)) {
 
