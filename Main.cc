@@ -21,7 +21,6 @@ int main() {
 	string line = "";
 
 
-
 	if (file.is_open()) {
 		while (getline(file, line)) {
 

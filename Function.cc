@@ -10,7 +10,17 @@ bool Function::exists() const{
 
 void Function::execute() {
 
-	std::cout << code;
+	string remaing = code;
+	bool last = false;
+
+	while (remaing.length() && !last) {
+		size_t index = remaing.find_first_of(";\n");
+		last = index == string::npos;
+		string line = remaing.substr(0, index);
+		remaing = remaing.substr(index + 1, string::npos);
+		std::cout << line << '\n';
+
+	}
 
 	/*
 	while (getline(file, line)) {
