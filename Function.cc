@@ -1,5 +1,6 @@
 #include "Function.h"
 
+
 string Function::getName() const{
 	return name;
 }
@@ -9,24 +10,16 @@ bool Function::exists() const{
 }
 
 void Function::execute() {
-
-	string remaing = code;
-	bool last = false;
-
-	while (remaing.length() && !last) {
-		size_t index = remaing.find_first_of(";\n");
-		last = index == string::npos;
-		string line = remaing.substr(0, index);
-		remaing = remaing.substr(index + 1, string::npos);
-		std::cout << line << '\n';
-
-	}
-
-	/*
-	while (getline(file, line)) {
+	size_t end = 0, start = 0;
+	for (; start != string::npos;) {
+		end = code.find_first_of(";\n", start);
+		string line = code.substr(start, end-start);
+		start = end == string::npos ? string::npos : end + 1;
 
 		line = line.substr(0, line.find('//')) + '\n';
-		//std::cout << "line: " << line << '\n';
+
+
+
 
 		VarType declaredType = VarType::VOID;
 
@@ -71,5 +64,9 @@ void Function::execute() {
 		}
 
 
-	}*/
+
+		std::cout << line << '\n';
+	}
+
+	
 }

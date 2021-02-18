@@ -8,10 +8,10 @@
 #include "Expression.h"
 #include "Variable.h"
 #include "Function.h"
+#include "Scope.h"
 
 
 using string = std::string;
-using Scope = std::map<std::string, Variable>;
 
 
 int main() {
@@ -20,6 +20,8 @@ int main() {
 	std::ifstream file("./script.ds");
 	string line = "";
 
+	Function f(scope, "a", "out(3)");
+	f.execute();
 
 	if (file.is_open()) {
 		while (getline(file, line)) {
