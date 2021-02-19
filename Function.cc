@@ -65,7 +65,7 @@ void Function::execute() {
 
 
 
-		std::cout << line << '\n';
+		//std::cout << line << '\n';
 	}
 
 	
