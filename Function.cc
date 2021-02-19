@@ -9,7 +9,7 @@ bool Function::exists() const{
 	return name != "undefined";
 }
 
-void Function::removeComments() {
+void Function::removeNonCode() {
 	size_t index = 0;
 
 	while ((index = code.find_first_of("/#", index)) != std::string::npos)
@@ -33,13 +33,12 @@ void Function::removeComments() {
 
 	index = 1;
 	while ((index = code.find('\n', index+1)) != std::string::npos)
-		if (code[index - 1])
-			code.erase(code.begin()+index);
+		while (isWhitespace(code[index - 1]))
+			code.erase(code.begin()+index-1);
 }
 
 void Function::execute() {
-	removeComments();
-	std::cout << "code: " << code;
+	removeNonCode();
 
 	for (size_t end, start = 0; start != string::npos;) {
 		end = code.find_first_of(";\n", start);
