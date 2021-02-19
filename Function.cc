@@ -10,15 +10,26 @@ bool Function::exists() const{
 }
 
 void Function::execute() {
-	size_t end = 0, start = 0;
-	for (; start != string::npos;) {
+
+	for (size_t end, start = 0; start != string::npos;) {
 		end = code.find_first_of(";\n", start);
 		string line = code.substr(start, end-start);
 		start = end == string::npos ? string::npos : end + 1;
 
-		line = line.substr(0, line.find('//')) + '\n';
+
+		std::cout << "before: " << line;
+
+		size_t slash = 0;
+		while ((slash = line.find('/', slash)) != std::string::npos)
+			if (line[slash + 1] == '/')
+				line = line.substr(0, slash - 1) + '\n';
+			else slash++;
+		
+
+		std::cout << ", and after: " << line << '\n';
 
 
+		line = line.substr(0, line.find('/')) + '\n';
 
 
 		VarType declaredType = VarType::VOID;

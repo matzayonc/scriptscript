@@ -21,7 +21,7 @@ string readFile(string filename) {
 
 	if (file.is_open()) {
 		while (getline(file, line))
-			code += line;
+			code += line + '\n';
 		file.close();
 	}
 
