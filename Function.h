@@ -20,6 +20,7 @@ public:
 
 	string getName() const;
 	bool exists() const;
+	void removeComments();
 	void execute();
 };
 

@@ -9,27 +9,22 @@ bool Function::exists() const{
 	return name != "undefined";
 }
 
+void Function::removeComments() {
+	size_t index = 0;
+
+	while ((index = code.find('/', index)) != std::string::npos)
+		if (code[index + 1] == '/')
+			code.erase(index, code.find('\n', index) - index);
+}
+
 void Function::execute() {
+	removeComments();
 
 	for (size_t end, start = 0; start != string::npos;) {
 		end = code.find_first_of(";\n", start);
 		string line = code.substr(start, end-start);
 		start = end == string::npos ? string::npos : end + 1;
 
-
-		std::cout << "before: " << line;
-
-		size_t slash = 0;
-		while ((slash = line.find('/', slash)) != std::string::npos)
-			if (line[slash + 1] == '/')
-				line = line.substr(0, slash - 1) + '\n';
-			else slash++;
-		
-
-		std::cout << ", and after: " << line << '\n';
-
-
-		line = line.substr(0, line.find('/')) + '\n';
 
 
 		VarType declaredType = VarType::VOID;
