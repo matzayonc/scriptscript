@@ -12,13 +12,34 @@ bool Function::exists() const{
 void Function::removeComments() {
 	size_t index = 0;
 
-	while ((index = code.find('/', index)) != std::string::npos)
-		if (code[index + 1] == '/')
+	while ((index = code.find_first_of("/#", index)) != std::string::npos)
+		if (code[index] == '#' || code[index + 1] == '/')
 			code.erase(index, code.find('\n', index) - index);
+		else if (code[index + 1] == '*')
+			while (true) {
+				size_t end = code.find('/', index + 2);
+				if (end == std::string::npos) {
+					std::cout << "couldn't find end of multiline comment, that started at: " << index << "th character.";
+					throw;
+				}
+
+				if (code[end - 1] == '*') {
+					code.erase(index, end - index + 1);
+					break;
+				}
+
+			}
+		else index++;
+
+	index = 1;
+	while ((index = code.find('\n', index+1)) != std::string::npos)
+		if (code[index - 1])
+			code.erase(code.begin()+index);
 }
 
 void Function::execute() {
 	removeComments();
+	std::cout << "code: " << code;
 
 	for (size_t end, start = 0; start != string::npos;) {
 		end = code.find_first_of(";\n", start);
