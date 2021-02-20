@@ -3,4 +3,4 @@
 #include <string>
 #include "Variable.h"
 
-typedef std::map<std::string, Var*> Scope;
+typedef std::map<std::string, Variable*> Scope;
