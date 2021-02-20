@@ -1,8 +1,6 @@
 #include "Expression.h"
 
 
-using Scope = std::map<std::string, Variable>;
-
 bool isDigit(const char character) {
 	return (int)character >= 48 && (int)character <= 57;
 }
@@ -172,10 +170,10 @@ void Expression::hydrateVariables() {
 				continue; // functions
 		}
 		else{
-			if (!(*scope)[name].exists())
+			if ((*scope).count(name) == 0)
 				std::cerr << "word: " << name << " is not a variable(will be 0)\n";
-
-			hydrated += std::to_string((int)(*scope)[name].getValue()); //FIXME: shouldnt always be int
+			else
+				hydrated += std::to_string((int)(*scope)[name]->getValue()); //FIXME: shouldnt always be int
 
 			name = "";
 

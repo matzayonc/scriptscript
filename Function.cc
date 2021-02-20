@@ -76,8 +76,8 @@ void Function::execute() {
 			if (declaredType == VarType::VOID) {
 				if (word == "num")
 					declaredType = VarType::NUM;
-				else if ((*scope)[word].getName() != "undefined") {
-					std::cout << (*scope)[word].getName() << '\n';
+				else if ((*scope).count(word) > 0) {
+					std::cout << (*scope)[word]->getName() << '\n';
 
 				}
 				else
@@ -87,8 +87,8 @@ void Function::execute() {
 
 			}
 			else {
-				scope->insert({ word, Variable(word) });
-				(*scope)[word].setValue(expr.eval());
+				scope->insert({ word, new Variable(word, expr.eval(), VarType::NUM)});
+				//(*scope)[word].setValue(expr.eval(), VarType::NUM);
 			}
 
 		}

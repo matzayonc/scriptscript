@@ -6,10 +6,9 @@
 #include <vector>
 
 #include "Variable.h"
+#include "Scope.h"
 
 using string = std::string;
-using Scope = std::map<std::string, Variable>;
-
 
 class Expression{
 	string expr;
