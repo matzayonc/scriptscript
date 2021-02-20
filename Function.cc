@@ -37,6 +37,7 @@ void Function::removeNonCode() {
 			code.erase(code.begin()+index-1);
 }
 
+
 void Function::execute() {
 	removeNonCode();
 
@@ -46,10 +47,8 @@ void Function::execute() {
 		start = end == string::npos ? string::npos : end + 1;
 
 
-
 		VarType declaredType = VarType::VOID;
-
-		Expression expr("", &scope);
+		Expression expr("", scope);
 
 		size_t eqs = line.find('=');
 
@@ -77,14 +76,19 @@ void Function::execute() {
 			if (declaredType == VarType::VOID) {
 				if (word == "num")
 					declaredType = VarType::NUM;
-				else continue;
+				else if ((*scope)[word].getName() != "undefined") {
+					std::cout << (*scope)[word].getName() << '\n';
+
+				}
+				else
+					std::cerr << "err: " << word << " is not defined\n";
 
 				word = "";
 
 			}
 			else {
-				scope.insert({ word, Variable(word) });
-				scope[word].setValue(expr.eval());
+				scope->insert({ word, Variable(word) });
+				(*scope)[word].setValue(expr.eval());
 			}
 
 		}

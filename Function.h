@@ -11,12 +11,12 @@ using string = std::string;
 class Function{
 	string name;
 	string code;
-	Scope scope;
+	Scope* scope = nullptr;
 
 public:
 	Function() :name("undefined") {};
-	Function(Scope& scope, string name) :scope(scope), name(name) {};
-	Function(Scope& scope, string name, string code) :scope(scope), name(name), code(code) {};
+	Function(Scope& scope, string name) :scope(&scope), name(name) {};
+	Function(Scope& scope, string name, string code) :scope(&scope), name(name), code(code) {};
 
 	string getName() const;
 	bool exists() const;
