@@ -87,7 +87,7 @@ void Function::execute() {
 
 			}
 			else {
-				scope->insert({ word, new NumericVariable(word, expr.eval(), VarType::NUM)});
+				scope->insert({ word, VariableFactory(word, VarType::NUM, expr.eval()) });
 				//(*scope)[word].setValue(expr.eval(), VarType::NUM);
 			}
 

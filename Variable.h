@@ -12,88 +12,59 @@ enum class VarType {
 
 
 class Variable {
-public:
-	Variable() {};
-
-	virtual void setValue(float val, VarType variableType) = 0;
-	virtual float getValue() const = 0;
-
-	virtual string getName() const = 0;
-
-};
-
-
-class VariableName: virtual public Variable {
 protected:
-	string name;
+	string name = "undefined";
+	VarType type = VarType::VOID;
+	bool defined = false;
+
 
 public:
-	VariableName() :name("undefined") {};
-	VariableName(string name) :name(name) {};
+	Variable() {
+	}
 
-	string getName() const {
+	Variable(string name) : name(name) {
+	}
+
+	bool isType(VarType VariableType = VarType::VOID) {
+		return VariableType == type;
+	}
+
+	string getName() {
 		return name;
 	}
 
-
-	bool exists() {  
-		return name != "undefined";
-	}
-
+	virtual string getAsString() = 0;
 };
 
 
+class NumericVariable : public Variable {
+private:
+	double value = 0;
+
+public:
+	NumericVariable(string name, int value) : Variable(name), value(value) {
+		type = VarType::NUM;
+	}
+
+	string getAsString()  override {
+		return std::to_string(value);
+	}
+
+	void setValue(double v) {
+		value = v;
+	};
+
+};
 
 template<class T>
-class VariableValue: virtual public Variable {
-protected:
-	bool defined = false;
-	VarType type = VarType::NUM;
-	T value = NULL;
+Variable* VariableFactory(string name, VarType type, T value) {
 
-public:
-	VariableValue(T value, VarType type)
-		:value(value), type(type) {};
-	VariableValue(const VariableValue& rhs)
-		:value(rhs.getValue()), type(type) {};
+	switch (type) {
+	case VarType::NUM:
+		return new NumericVariable(name, value);
 
-
-
-	bool isType(VarType t) const {
-		return t == type;
+	default:
+		throw "not a valid type in variable factory";
 	}
 
-	void setValue(T val, VarType variableType) {
-		type = variableType;
-		value = val;
-	}
-
-	T getValue() const {
-		return value;
-	}
-
-};
-
-
-
-
-class NumericVariable : public VariableName, public VariableValue<float> {
-
-public:
-	
-	NumericVariable(string name, float value, VarType type)
-		: VariableName(name), VariableValue<float>(value, type){};
-
-	float getValue() const override {
-		return value;
-	}
-
-	string getName() const override {
-		return name;
-	}
-
-	void setValue(float val, VarType variableType) override {
-		type = variableType;
-		value = val;
-	}
-};
+}

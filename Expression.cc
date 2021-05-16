@@ -173,7 +173,7 @@ void Expression::hydrateVariables() {
 			if ((*scope).count(name) == 0)
 				std::cerr << "word: " << name << " is not a variable(will be 0)\n";
 			else
-				hydrated += std::to_string((int)(*scope)[name]->getValue()); //FIXME: shouldnt always be int
+				hydrated += std::to_string(stoi((*scope)[name]->getAsString())); //FIXME: shouldnt always be int
 
 			name = "";
 
