@@ -11,17 +11,24 @@
 using string = std::string;
 
 class Expression{
-	string expr;
 	Scope* scope;
+	string expr;
+	VarType expectedType;
 
 	string toRPN();
 	void hydrateVariables();
+	void defloat();
+
 
 public:
-	Expression(string expression, Scope* currentScope) 
-		: expr(expression), scope(currentScope) {};
+	Expression(string expression, Scope* currentScope, VarType expectedType)
+	:scope(currentScope), expectedType(expectedType) {
+		setString(expression);
+	};
 
 	void setString(string expression);
+
+	float evalLegacy();
 	float eval();
 };
 

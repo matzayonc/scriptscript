@@ -56,6 +56,7 @@ public:
 
 };
 
+
 template<class T>
 Variable* VariableFactory(string name, VarType type, T value) {
 
@@ -64,7 +65,7 @@ Variable* VariableFactory(string name, VarType type, T value) {
 		return new NumericVariable(name, value);
 
 	default:
-		throw "not a valid type in variable factory";
+		std::cerr << "not a valid type in variable factory for variable: " << name ;
 	}
 
 }

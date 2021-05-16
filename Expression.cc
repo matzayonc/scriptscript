@@ -62,6 +62,18 @@ string Expression::toRPN() {
 float Expression::eval() {
 	if (expr.empty()) return 0;
 
+	for (auto i : expr)
+		if (isOperator(i))
+			return 0;
+
+
+	return (float)stoi(expr);
+}
+
+
+float Expression::evalLegacy() { //REPLACEME!
+	if (expr.empty()) return 0;
+
 	hydrateVariables();
 
 	float first, second;
@@ -116,7 +128,18 @@ float Expression::eval() {
 
 void Expression::setString(string expression) {
 	expr = expression;
+	defloat();
 }
+
+void Expression::defloat() {
+	string defloated = "";
+	for (auto i : expr)
+		if (i == '\n' || !isWhitespace(i))
+			defloated += i;
+
+	expr = defloated;
+}
+
 
 
 void Expression::hydrateVariables() {
@@ -132,12 +155,12 @@ void Expression::hydrateVariables() {
 		if (argMode) {
 			if (isWhitespace(i)) continue;
 
-			if (i == ',') {
-				args.push_back(Expression(arg, scope));
+			if (i == ',' || i == ')') {
+				args.push_back(Expression(arg, scope, VarType::NUM)); //FIXME: expected type should change based on function (I feel bad for whoever has to do it)
 				arg = "";
 			}
-			else if (i == ')') {
-				args.push_back(Expression(arg, scope));
+
+			if (i == ')') {
 				argMode = false;
 
 				if (name == "out") {
@@ -168,6 +191,8 @@ void Expression::hydrateVariables() {
 
 			if(name == "out")
 				continue; // functions
+
+			std::cerr << "function :\"" << name << "\" does not exist";
 		}
 		else{
 			if ((*scope).count(name) == 0)

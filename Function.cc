@@ -19,7 +19,7 @@ void Function::removeNonCode() {
 			while (true) {
 				size_t end = code.find('/', index + 2);
 				if (end == std::string::npos) {
-					std::cout << "couldn't find end of multiline comment, that started at: " << index << "th character.";
+					std::cerr << "couldn't find end of multiline comment, that started at: " << index << "th character.";
 					throw;
 				}
 
@@ -48,19 +48,16 @@ void Function::execute() {
 
 
 		VarType declaredType = VarType::VOID;
-		Expression expr("", scope);
 
 		size_t eqs = line.find('=');
 
 		if (eqs == std::string::npos) {
-			expr.setString(line);
+			Expression expr(line, scope, VarType::VOID);
 			expr.eval();
 			continue;
 		}
 
 		string word = "";
-
-		expr.setString(line.substr(eqs + 1, std::string::npos));
 
 
 		for (const char& i : line) {
@@ -87,6 +84,9 @@ void Function::execute() {
 
 			}
 			else {
+				Expression expr("", scope, VarType::NUM);
+				expr.setString(line.substr(eqs + 1, std::string::npos));
+
 				scope->insert({ word, VariableFactory(word, VarType::NUM, expr.eval()) });
 				//(*scope)[word].setValue(expr.eval(), VarType::NUM);
 			}
