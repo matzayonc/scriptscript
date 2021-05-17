@@ -20,7 +20,7 @@ public:
 	string getName() const;
 	bool exists() const;
 
-	virtual void execute(Variable&) const = 0;
+	virtual void execute() const = 0;
 };
 
 
