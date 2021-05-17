@@ -41,6 +41,8 @@ class NumericVariable : public Variable {
 private:
 	double value = 0;
 
+	void removeNonCode();
+
 public:
 	NumericVariable(string name, int value) : Variable(name), value(value) {
 		type = VarType::NUM;

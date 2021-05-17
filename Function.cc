@@ -1,11 +1,11 @@
 #include "Function.h"
 
 
-string Function::getName() const{
+string FunctionInterface::getName() const{
 	return name;
 }
 
-bool Function::exists() const{
+bool FunctionInterface::exists() const{
 	return name != "undefined";
 }
 
@@ -19,7 +19,7 @@ void Function::removeNonCode() {
 			while (true) {
 				size_t end = code.find('/', index + 2);
 				if (end == std::string::npos) {
-					std::cerr << "couldn't find end of multiline comment, that started at: " << index << "th character.";
+					std::cerr << "couldn't find end of multiline comment, that started at position: " << index << ".\n";
 					throw;
 				}
 
@@ -38,8 +38,7 @@ void Function::removeNonCode() {
 }
 
 
-void Function::execute() {
-	removeNonCode();
+void Function::execute()  const {
 
 	for (size_t end, start = 0; start != string::npos;) {
 		end = code.find_first_of(";\n", start);
