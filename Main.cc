@@ -30,9 +30,23 @@ string readFile(string filename) {
 
 int main() {
 
+	Variable* unu = new NumericVariable("", 5);
+	Variable* du = new NumericVariable("", 5);
+	std::vector<Variable*> args;
+	args.push_back(unu);
+	args.push_back(du);
+	OutBuildIn out;
+	out.execute(args);
+
+	Scope s;
+	Scope d{ &s };
+	Scope e = d;
+	std::cout << e.getId();
+
+	/*
 	Scope scope;
 	Function main(scope, "a", readFile("script.ds"));
-	main.execute();
-
+	main.execute(args);
+	*/
 	return 0;
 }

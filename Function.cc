@@ -38,7 +38,7 @@ void Function::removeNonCode() {
 }
 
 
-void Function::execute()  const {
+void Function::execute(const std::vector<Variable*> args) const {
 
 	for (size_t end, start = 0; start != string::npos;) {
 		end = code.find_first_of(";\n", start);
@@ -72,8 +72,8 @@ void Function::execute()  const {
 			if (declaredType == VarType::VOID) {
 				if (word == "num")
 					declaredType = VarType::NUM;
-				else if ((*scope).count(word) > 0) {
-					std::cout << (*scope)[word]->getName() << '\n';
+				else if (scope->contains(word)) {
+					std::cout << scope->find(word)->getName() << '\n';
 
 				}
 				else
@@ -86,7 +86,7 @@ void Function::execute()  const {
 				Expression expr("", scope, VarType::NUM);
 				expr.setString(line.substr(eqs + 1, std::string::npos));
 
-				scope->insert({ word, VariableFactory(word, VarType::NUM, expr.eval()) });
+				scope->registerVariable(word, VariableFactory(word, VarType::NUM, expr.eval()));
 				//(*scope)[word].setValue(expr.eval(), VarType::NUM);
 			}
 

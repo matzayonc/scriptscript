@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <iostream>
 #include "Variable.h"
 #include "Expression.h"
@@ -20,7 +21,7 @@ public:
 	string getName() const;
 	bool exists() const;
 
-	virtual void execute() const = 0;
+	virtual void execute(const std::vector<Variable*> args) const = 0;
 };
 
 
@@ -36,18 +37,21 @@ public:
 		removeNonCode();
 	};
 
-	void execute() const;
+	void execute(const std::vector<Variable*> args) const;
 
 };
 
 
 //MOVEME: move to distinct file(folder?)
 
-class Out: public FunctionInterface {
+class OutBuildIn: public FunctionInterface {
 
 
 public:
-	void execute(Variable& var) const { //FIXME: Dynamic arguments?
-		std::cout << var.getAsString() << std::endl;
+	void execute(const std::vector<Variable*> args) const {
+		for(auto arg : args)
+			std::cout << arg->getAsString() << ", ";
+
+		std::cout << std::endl;
 	}
 };

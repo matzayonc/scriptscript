@@ -195,13 +195,12 @@ void Expression::hydrateVariables() {
 			std::cerr << "function :\"" << name << "\" does not exist";
 		}
 		else{
-			if ((*scope).count(name) == 0)
+			if (!scope->contains(name))
 				std::cerr << "word: " << name << " is not a variable(will be 0)\n";
 			else
-				hydrated += std::to_string(stoi((*scope)[name]->getAsString())); //FIXME: shouldnt always be int
+				hydrated += scope->find(name)->getAsString(); //FIXME: shouldnt always be int
 
 			name = "";
-
 			hydrated += i;
 		}
 	}

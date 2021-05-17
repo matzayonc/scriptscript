@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 using string = std::string;
 
@@ -55,7 +56,6 @@ public:
 	void setValue(double v) {
 		value = v;
 	};
-
 };
 
 
@@ -69,5 +69,4 @@ Variable* VariableFactory(string name, VarType type, T value) {
 	default:
 		std::cerr << "not a valid type in variable factory for variable: " << name ;
 	}
-
 }
